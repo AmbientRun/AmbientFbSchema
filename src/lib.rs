@@ -61,7 +61,5 @@ pub fn hash_api_key(api_key: &str) -> String {
     hasher.update("ambient");
     hasher.update(api_key);
     let hash = hasher.finalize();
-    use base64ct::{Base64, Encoding};
-
-    Base64::encode_string(&hash)
+    base16ct::lower::encode_string(&hash)
 }
