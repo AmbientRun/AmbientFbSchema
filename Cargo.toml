@@ -1,0 +1,13 @@
+[package]
+name = "ambient_fb_schema"
+version = "0.1.0"
+edition = "2021"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+rs2js = "0.2.0"
+firebase-wasm = { git = "https://github.com/FredrikNoren/firebase-wasm-rs.git", rev = "3b871f6" }
+wasm-bindgen = "0.2"
+anyhow = "1.0"
+js-sys = "0.3"
