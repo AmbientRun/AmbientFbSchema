@@ -6,12 +6,14 @@ use rs2js::Rs2Js;
 pub enum DbCollections {
     Embers,
     Profiles,
+    ApiKeys,
 }
 impl DbCollections {
     pub fn as_str(&self) -> &'static str {
         match self {
             DbCollections::Embers => "embers",
             DbCollections::Profiles => "profiles",
+            DbCollections::ApiKeys => "api_keys",
         }
     }
     pub fn doc(&self, id: impl AsRef<str>) -> DocRef {
@@ -42,4 +44,12 @@ pub struct DbProfile {
     pub username: String,
     #[raw]
     pub created: Timestamp,
+}
+
+#[derive(Rs2Js, Debug, Clone, PartialEq)]
+pub struct DbApiKey {
+    #[raw]
+    pub created: Timestamp,
+    pub user_id: String,
+    pub name: String,
 }
