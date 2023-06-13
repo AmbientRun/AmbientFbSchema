@@ -6,8 +6,6 @@ edition = "2021"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-rs2js = "0.2.0"
+rs2js = { git = "https://github.com/AmbientRun/Rs2Js.git", rev = "9dae40a" }
 firebase-wasm = { git = "https://github.com/FredrikNoren/firebase-wasm-rs.git", rev = "3b871f6" }
-wasm-bindgen = "0.2"
-anyhow = "1.0"
-js-sys = "0.3"
+ambient_project = { git = "https://github.com/AmbientRun/Ambient.git", rev = "8839542" }
