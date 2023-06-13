@@ -9,3 +9,5 @@ edition = "2021"
 rs2js = "0.2"
 firebase-wasm = { git = "https://github.com/FredrikNoren/firebase-wasm-rs.git", rev = "3b871f6" }
 ambient_project = { git = "https://github.com/AmbientRun/Ambient.git", rev = "8839542" }
+sha2 = "0.10.6"
+base64ct = { version = "1.6.0", features = ["alloc"] }

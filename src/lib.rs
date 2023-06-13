@@ -53,3 +53,15 @@ pub struct DbApiKey {
     pub user_id: String,
     pub name: String,
 }
+
+pub fn hash_api_key(api_key: &str) -> String {
+    use sha2::{Digest, Sha256};
+
+    let mut hasher = Sha256::new();
+    hasher.update("ambient");
+    hasher.update(api_key);
+    let hash = hasher.finalize();
+    use base64ct::{Base64, Encoding};
+
+    Base64::encode_string(&hash)
+}
