@@ -52,8 +52,6 @@ pub trait DbCollection {
     derive(serde::Serialize, serde::Deserialize)
 )]
 pub struct DbEmber {
-    #[cfg_attr(not(target_arch = "wasm32"), serde(alias = "_firestore_id"))]
-    pub id: Option<String>,
     pub name: String,
     pub owner_id: String,
     #[cfg_attr(target_arch = "wasm32", raw)]
@@ -76,8 +74,6 @@ impl DbCollection for DbEmber {
     derive(serde::Serialize, serde::Deserialize)
 )]
 pub struct DbProfile {
-    #[cfg_attr(not(target_arch = "wasm32"), serde(alias = "_firestore_id"))]
-    pub id: Option<String>,
     pub username: String,
     #[cfg_attr(target_arch = "wasm32", raw)]
     pub created: Timestamp,
@@ -94,8 +90,6 @@ impl DbCollection for DbProfile {
     derive(serde::Serialize, serde::Deserialize)
 )]
 pub struct DbApiKey {
-    #[cfg_attr(not(target_arch = "wasm32"), serde(alias = "_firestore_id"))]
-    pub hash: Option<String>,
     #[cfg_attr(target_arch = "wasm32", raw)]
     pub created: Timestamp,
     pub user_id: String,
@@ -123,8 +117,6 @@ pub fn hash_api_key(api_key: &str) -> String {
     derive(serde::Serialize, serde::Deserialize)
 )]
 pub struct DbDeployment {
-    #[cfg_attr(not(target_arch = "wasm32"), serde(alias = "_firestore_id"))]
-    pub id: Option<String>,
     pub ember_id: String,
     pub files: Vec<File>,
     pub manifest: Manifest,
