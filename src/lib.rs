@@ -1,4 +1,4 @@
-pub use ambient_project::Manifest;
+pub use ambient_project::{Manifest, Version};
 #[cfg(target_arch = "wasm32")]
 use rs2js::Rs2Js;
 
@@ -120,7 +120,7 @@ pub struct DbDeployment {
     pub ember_id: String,
     pub files: Vec<File>,
     pub manifest: Manifest,
-    pub ambient_version: String,
+    pub ambient_version: Version,
     #[cfg_attr(target_arch = "wasm32", raw)]
     pub created: Timestamp,
 }
