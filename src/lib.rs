@@ -1,4 +1,5 @@
-pub use ambient_project::{Manifest, Version};
+pub use ::ambient_project;
+use ambient_project::{Manifest, Version};
 #[cfg(target_arch = "wasm32")]
 use rs2js::Rs2Js;
 
