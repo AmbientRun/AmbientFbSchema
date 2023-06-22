@@ -13,6 +13,6 @@ serde = { version = "1", features = ["derive"] }
 
 [target.'cfg(target_arch = "wasm32")'.dependencies]
 firebase-wasm = { git = "https://github.com/FredrikNoren/firebase-wasm-rs.git", rev = "3b871f6" }
-rs2js = "0.2"
+serde-wasm-bindgen = { git = "https://github.com/FredrikNoren/serde-wasm-bindgen.git", rev = "c8bfece" }
 [target.'cfg(not(target_arch = "wasm32"))'.dependencies]
 firestore = "0.32"
