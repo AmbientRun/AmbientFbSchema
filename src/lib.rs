@@ -55,9 +55,9 @@ pub struct DbEmber {
     pub owner_id: String,
     pub created: Timestamp,
     pub manifest: Option<Manifest>,
-    #[cfg_attr(not(target_arch = "wasm32"), serde(default))]
+    #[serde(default)]
     pub latest_deployment: String,
-    #[cfg_attr(not(target_arch = "wasm32"), serde(default))]
+    #[serde(default)]
     pub deployments: Vec<String>,
 }
 
