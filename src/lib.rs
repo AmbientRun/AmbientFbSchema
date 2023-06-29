@@ -17,6 +17,8 @@ pub enum DbCollections {
     Profiles,
     ApiKeys,
     Deployments,
+    Servers,
+    RunningServers,
 }
 impl DbCollections {
     pub fn as_str(&self) -> &'static str {
@@ -25,6 +27,8 @@ impl DbCollections {
             DbCollections::Profiles => "profiles",
             DbCollections::ApiKeys => "api_keys",
             DbCollections::Deployments => "deployments",
+            DbCollections::Servers => "servers",
+            DbCollections::RunningServers => "running_servers",
         }
     }
     #[cfg(target_arch = "wasm32")]
@@ -116,4 +120,52 @@ pub struct File {
     pub path: String,
     pub size: usize,
     pub md5: MD5Digest,
+}
+
+#[derive(Clone, Debug, Deserialize, Serialize)]
+pub struct DbServer {
+    pub name: String,
+    pub context: String,
+    pub deploy_url: String,
+    pub host: String,
+    pub state: ServerState,
+    pub created: Timestamp,
+    pub stopped: Option<Timestamp>,
+}
+
+impl DbCollection for DbServer {
+    const COLLECTION: DbCollections = DbCollections::Servers;
+}
+
+#[derive(Clone, Copy, Debug, Eq, PartialEq, Deserialize, Serialize)]
+pub enum ServerState {
+    Starting,
+    Running,
+    Stopped,
+}
+
+#[derive(Clone, Debug, Deserialize, Serialize)]
+pub struct DbRunningServer {
+    pub server_id: String,
+    pub deploy_url: String,
+    pub context: String,
+}
+
+impl DbRunningServer {
+    // NOTE: generated document_id can have a collission with specifically crated values
+    pub fn document_id(deploy_url: &str, context: &str) -> String {
+        use sha2::{Digest, Sha256};
+
+        let mut hasher = Sha256::new();
+        hasher.update("url:");
+        hasher.update(deploy_url);
+        hasher.update("context:");
+        hasher.update(context);
+        let hash = hasher.finalize();
+        base16ct::lower::encode_string(&hash)
+    }
+}
+
+impl DbCollection for DbRunningServer {
+    const COLLECTION: DbCollections = DbCollections::RunningServers;
 }
