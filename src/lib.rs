@@ -131,6 +131,7 @@ pub struct DbServer {
     pub state: ServerState,
     pub created: Timestamp,
     pub stopped: Option<Timestamp>,
+    pub logs: Vec<ServerLog>,
 }
 
 impl DbCollection for DbServer {
@@ -142,6 +143,19 @@ pub enum ServerState {
     Starting,
     Running,
     Stopped,
+}
+
+#[derive(Clone, Debug, Eq, PartialEq, Deserialize, Serialize)]
+pub struct ServerLog {
+    pub timestamp: Timestamp,
+    pub message: String,
+    pub source: Option<ServerLogSource>,
+}
+
+#[derive(Clone, Copy, Debug, Eq, PartialEq, Deserialize, Serialize)]
+pub enum ServerLogSource {
+    Stdout,
+    Stderr,
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
