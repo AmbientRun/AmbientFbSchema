@@ -146,7 +146,7 @@ pub enum ServerState {
     Stopped,
 }
 
-#[derive(Clone, Debug, Eq, PartialEq, Deserialize, Serialize)]
+#[derive(Clone, Debug, PartialEq, Deserialize, Serialize)]
 pub struct ServerLog {
     pub timestamp: Timestamp,
     pub message: String,
