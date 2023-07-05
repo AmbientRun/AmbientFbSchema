@@ -131,6 +131,7 @@ pub struct DbServer {
     pub state: ServerState,
     pub created: Timestamp,
     pub stopped: Option<Timestamp>,
+    #[serde(default)]
     pub logs: Vec<ServerLog>,
 }
 
