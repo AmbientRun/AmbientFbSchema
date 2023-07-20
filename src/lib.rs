@@ -184,3 +184,10 @@ impl DbRunningServer {
 impl DbCollection for DbRunningServer {
     const COLLECTION: DbCollections = DbCollections::RunningServers;
 }
+
+#[derive(Clone, Debug, Deserialize, Serialize)]
+pub struct DbMessage {
+    pub user_id: String,
+    pub created: Timestamp,
+    pub content: String,
+}
