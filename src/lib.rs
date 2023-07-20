@@ -63,6 +63,8 @@ pub struct DbEmber {
     pub latest_deployment: String,
     #[serde(default)]
     pub deployments: Vec<String>,
+    #[serde(default)]
+    pub like_info: LikeInfo,
 }
 
 impl DbCollection for DbEmber {
@@ -190,4 +192,15 @@ pub struct DbMessage {
     pub user_id: String,
     pub created: Timestamp,
     pub content: String,
+}
+
+#[derive(Clone, Debug, Deserialize, Serialize, Default, PartialEq)]
+pub struct LikeInfo {
+    pub total: i32,
+    pub by_day: Vec<i32>,
+}
+
+#[derive(Clone, Debug, Deserialize, Serialize)]
+pub struct DbLike {
+    pub created: Timestamp,
 }
