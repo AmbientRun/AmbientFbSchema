@@ -12,7 +12,7 @@ base16ct = { version = "0.2.0", features = ["alloc"] }
 serde = { version = "1", features = ["derive"] }
 
 [target.'cfg(target_arch = "wasm32")'.dependencies]
-firebase-wasm = { git = "https://github.com/FredrikNoren/firebase-wasm-rs.git" }
+firebase-wasm = { git = "https://github.com/FredrikNoren/firebase-wasm-rs.git", rev = "32ded13" }
 serde-wasm-bindgen = { git = "https://github.com/FredrikNoren/serde-wasm-bindgen.git", rev = "c8bfece" }
 [target.'cfg(not(target_arch = "wasm32"))'.dependencies]
 firestore = "0.32"
