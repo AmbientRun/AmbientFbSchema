@@ -2,7 +2,7 @@ pub use ::ambient_project;
 use ambient_project::{Manifest, Version};
 
 #[cfg(target_arch = "wasm32")]
-use firebase_wasm::firestore::Timestamp as TimestampRaw;
+use firebase_wasm::firestore::{CollectionReference, Timestamp as TimestampRaw};
 #[cfg(target_arch = "wasm32")]
 use serde_wasm_bindgen::PreserveJsValue;
 #[cfg(target_arch = "wasm32")]
@@ -27,6 +27,11 @@ impl DbCollections {
     #[cfg(target_arch = "wasm32")]
     pub fn doc(&self, id: impl AsRef<str>) -> DocRef {
         DocRef(format!("{}/{}", self, id.as_ref()))
+    }
+    #[cfg(target_arch = "wasm32")]
+    pub fn collection(&self) -> CollectionReference {
+        let db = firebase_wasm::firestore::get_firestore();
+        firebase_wasm::firestore::collection(db, &self.to_string()).unwrap()
     }
 }
 impl std::fmt::Display for DbCollections {
