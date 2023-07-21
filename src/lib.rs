@@ -12,7 +12,8 @@ use firestore::FirestoreTimestamp as Timestamp;
 use parse_display::{Display, FromStr};
 use serde::{Deserialize, Serialize};
 
-#[derive(Debug, Clone, Copy)]
+#[derive(Debug, Clone, Copy, Serialize, Deserialize)]
+#[serde(rename_all = "snake_case")]
 pub enum DbCollections {
     Embers,
     Profiles,
@@ -23,21 +24,19 @@ pub enum DbCollections {
     Likes,
 }
 impl DbCollections {
-    pub fn as_str(&self) -> &'static str {
-        match self {
-            DbCollections::Embers => "embers",
-            DbCollections::Profiles => "profiles",
-            DbCollections::ApiKeys => "api_keys",
-            DbCollections::Deployments => "deployments",
-            DbCollections::Servers => "servers",
-            DbCollections::RunningServers => "running_servers",
-            DbCollections::Likes => "likes",
-        }
-    }
     #[cfg(target_arch = "wasm32")]
     pub fn doc(&self, id: impl AsRef<str>) -> DocRef {
-        DocRef(format!("{}/{}", self.as_str(), id.as_ref()))
+        DocRef(format!("{}/{}", self, id.as_ref()))
     }
+}
+impl std::fmt::Display for DbCollections {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        serde_plain::to_string(self).unwrap().fmt(f)
+    }
+}
+#[test]
+fn test_collections_id() {
+    assert_eq!(DbCollections::RunningServers.to_string(), "running_servers");
 }
 
 #[cfg(target_arch = "wasm32")]
@@ -205,6 +204,7 @@ pub struct LikeInfo {
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct DbLike {
+    pub collection: DbCollections,
     pub created: Timestamp,
 }
 
