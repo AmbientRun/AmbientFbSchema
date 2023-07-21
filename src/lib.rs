@@ -204,13 +204,14 @@ pub struct DbMessage {
 #[derive(Clone, Debug, Deserialize, Serialize, Default, PartialEq)]
 pub struct LikeInfo {
     pub total: i32,
-    pub by_day: Vec<i32>,
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct DbLike {
     pub collection: DbCollections,
     pub created: Timestamp,
+    pub user_id: String,
+    pub item_id: String,
 }
 
 impl DbCollection for DbLike {
