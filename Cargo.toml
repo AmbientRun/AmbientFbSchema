@@ -10,6 +10,7 @@ ambient_project = { git = "https://github.com/AmbientRun/Ambient.git", rev = "5c
 sha2 = "0.10.6"
 base16ct = { version = "0.2.0", features = ["alloc"] }
 serde = { version = "1", features = ["derive"] }
+parse-display = "0.8.2"
 
 [target.'cfg(target_arch = "wasm32")'.dependencies]
 firebase-wasm = { git = "https://github.com/FredrikNoren/firebase-wasm-rs.git", rev = "32ded13" }

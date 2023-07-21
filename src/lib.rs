@@ -9,6 +9,7 @@ use serde_wasm_bindgen::PreserveJsValue;
 type Timestamp = PreserveJsValue<TimestampRaw>;
 #[cfg(not(target_arch = "wasm32"))]
 use firestore::FirestoreTimestamp as Timestamp;
+use parse_display::{Display, FromStr};
 use serde::{Deserialize, Serialize};
 
 #[derive(Debug, Clone, Copy)]
@@ -19,6 +20,7 @@ pub enum DbCollections {
     Deployments,
     Servers,
     RunningServers,
+    Likes,
 }
 impl DbCollections {
     pub fn as_str(&self) -> &'static str {
@@ -29,6 +31,7 @@ impl DbCollections {
             DbCollections::Deployments => "deployments",
             DbCollections::Servers => "servers",
             DbCollections::RunningServers => "running_servers",
+            DbCollections::Likes => "likes",
         }
     }
     #[cfg(target_arch = "wasm32")]
@@ -203,4 +206,14 @@ pub struct LikeInfo {
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct DbLike {
     pub created: Timestamp,
+}
+
+impl DbCollection for DbLike {
+    const COLLECTION: DbCollections = DbCollections::Likes;
+}
+#[derive(Display, FromStr, Debug)]
+#[display("{user_id}_{object_id}")]
+pub struct DbLikeId {
+    pub user_id: String,
+    pub object_id: String,
 }
