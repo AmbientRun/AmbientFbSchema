@@ -11,6 +11,7 @@ type Timestamp = PreserveJsValue<TimestampRaw>;
 use firestore::FirestoreTimestamp as Timestamp;
 use parse_display::{Display, FromStr};
 use serde::{Deserialize, Serialize};
+use serde_plain::{derive_display_from_serialize, derive_fromstr_from_deserialize};
 
 #[derive(Debug, Clone, Copy, Serialize, Deserialize)]
 #[serde(rename_all = "snake_case")]
@@ -22,6 +23,7 @@ pub enum DbCollections {
     Servers,
     RunningServers,
     Likes,
+    Likeables,
 }
 impl DbCollections {
     #[cfg(target_arch = "wasm32")]
@@ -34,11 +36,9 @@ impl DbCollections {
         firebase_wasm::firestore::collection(db, &self.to_string()).unwrap()
     }
 }
-impl std::fmt::Display for DbCollections {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        serde_plain::to_string(self).unwrap().fmt(f)
-    }
-}
+derive_display_from_serialize!(DbCollections);
+derive_fromstr_from_deserialize!(DbCollections);
+
 #[test]
 fn test_collections_id() {
     assert_eq!(DbCollections::RunningServers.to_string(), "running_servers");
@@ -70,8 +70,6 @@ pub struct DbEmber {
     pub latest_deployment: String,
     #[serde(default)]
     pub deployments: Vec<String>,
-    #[serde(default)]
-    pub like_info: LikeInfo,
 }
 
 impl DbCollection for DbEmber {
@@ -202,8 +200,19 @@ pub struct DbMessage {
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize, Default, PartialEq)]
-pub struct LikeInfo {
+pub struct DbLikeable {
     pub total: i32,
+}
+
+impl DbCollection for DbLikeable {
+    const COLLECTION: DbCollections = DbCollections::Likeables;
+}
+
+#[derive(Display, FromStr, Debug)]
+#[display("{collection}_{object_id}")]
+pub struct DbLikeableId {
+    pub collection: DbCollections,
+    pub object_id: String,
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
