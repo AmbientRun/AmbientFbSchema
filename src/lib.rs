@@ -69,6 +69,8 @@ pub struct DbEmber {
     pub latest_deployment: String,
     #[serde(default)]
     pub deployments: Vec<String>,
+    #[serde(default)]
+    pub total_likes: i32,
 }
 
 impl DbCollection for DbEmber {
