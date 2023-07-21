@@ -23,7 +23,6 @@ pub enum DbCollections {
     Servers,
     RunningServers,
     Likes,
-    Likeables,
 }
 impl DbCollections {
     #[cfg(target_arch = "wasm32")]
@@ -201,18 +200,7 @@ pub struct DbMessage {
 
 #[derive(Clone, Debug, Deserialize, Serialize, Default, PartialEq)]
 pub struct DbLikeable {
-    pub total: i32,
-}
-
-impl DbCollection for DbLikeable {
-    const COLLECTION: DbCollections = DbCollections::Likeables;
-}
-
-#[derive(Display, FromStr, Debug)]
-#[display("{collection}_{object_id}")]
-pub struct DbLikeableId {
-    pub collection: DbCollections,
-    pub object_id: String,
+    pub total_likes: i32,
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
