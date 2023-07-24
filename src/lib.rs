@@ -22,7 +22,7 @@ pub enum DbCollections {
     Deployments,
     Servers,
     RunningServers,
-    Likes,
+    Upvotes,
 }
 impl DbCollections {
     #[cfg(target_arch = "wasm32")]
@@ -70,7 +70,7 @@ pub struct DbEmber {
     #[serde(default)]
     pub deployments: Vec<String>,
     #[serde(default)]
-    pub total_likes: i32,
+    pub total_upvotes: i32,
 }
 
 impl DbCollection for DbEmber {
@@ -201,24 +201,24 @@ pub struct DbMessage {
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize, Default, PartialEq)]
-pub struct DbLikeable {
-    pub total_likes: i32,
+pub struct DbUpvotable {
+    pub total_upvotes: i32,
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
-pub struct DbLike {
+pub struct DbUpvote {
     pub collection: DbCollections,
     pub created: Timestamp,
     pub user_id: String,
     pub item_id: String,
 }
 
-impl DbCollection for DbLike {
-    const COLLECTION: DbCollections = DbCollections::Likes;
+impl DbCollection for DbUpvote {
+    const COLLECTION: DbCollections = DbCollections::Upvotes;
 }
 #[derive(Display, FromStr, Debug)]
 #[display("{user_id}_{object_id}")]
-pub struct DbLikeId {
+pub struct DbUpvoteId {
     pub user_id: String,
     pub object_id: String,
 }
