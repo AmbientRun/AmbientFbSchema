@@ -70,6 +70,8 @@ pub struct DbEmber {
     pub latest_deployment: String,
     #[serde(default)]
     pub deployments: Vec<String>,
+    /// If this is featured by ambient
+    pub featured: Option<f32>,
     #[serde(default)]
     pub total_upvotes: i32,
 }
