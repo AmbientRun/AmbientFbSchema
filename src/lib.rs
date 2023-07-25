@@ -64,7 +64,6 @@ pub struct DbEmber {
     pub name: String,
     pub owner_id: String,
     pub created: Timestamp,
-    #[serde(default)]
     pub updated: Timestamp,
     pub manifest: Option<Manifest>,
     #[serde(default)]
