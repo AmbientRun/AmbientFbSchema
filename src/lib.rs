@@ -47,6 +47,11 @@ fn test_collections_id() {
 #[cfg(target_arch = "wasm32")]
 #[derive(Debug, Clone, PartialEq)]
 pub struct DocRef(String);
+impl DocRef {
+    pub fn from_path(path: impl Into<String>) -> Self {
+        DocRef(path.into())
+    }
+}
 
 #[cfg(target_arch = "wasm32")]
 impl From<DocRef> for firebase_wasm::firestore::DocumentReference {
