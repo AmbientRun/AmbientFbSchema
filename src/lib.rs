@@ -67,11 +67,10 @@ pub trait DbCollection {
 
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
 pub struct DbEmber {
-    pub name: String,
     pub owner_id: String,
     pub created: Timestamp,
     pub updated: Timestamp,
-    pub manifest: Option<Manifest>,
+    pub manifest: Manifest,
     #[serde(default)]
     pub latest_deployment: String,
     #[serde(default)]
