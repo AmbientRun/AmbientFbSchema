@@ -23,6 +23,7 @@ pub enum DbCollections {
     Servers,
     RunningServers,
     Upvotes,
+    Activities,
 }
 impl DbCollections {
     #[cfg(target_arch = "wasm32")]
@@ -224,4 +225,25 @@ impl DbCollection for DbUpvote {
 pub struct DbUpvoteId {
     pub user_id: String,
     pub object_id: String,
+}
+
+#[derive(Clone, Debug, Eq, PartialEq, Deserialize, Serialize)]
+#[serde(tag = "type")]
+pub enum Activity {
+    EmberDeployed {
+        ember_id: String,
+        deployment_id: String,
+    },
+    CommentPosted {
+        path: String,
+    },
+}
+
+#[derive(Clone, Debug, Deserialize, Serialize)]
+pub struct DbActivity {
+    pub timestamp: Timestamp,
+    pub content: Activity,
+}
+impl DbCollection for DbActivity {
+    const COLLECTION: DbCollections = DbCollections::Activities;
 }
