@@ -234,7 +234,7 @@ pub enum Activity {
         ember_id: String,
         deployment_id: String,
     },
-    CommentPosted {
+    MessagePosted {
         path: String,
     },
 }
