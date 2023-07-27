@@ -21,6 +21,7 @@ pub enum DbCollections {
     ApiKeys,
     Deployments,
     Servers,
+    ServerLogs,
     RunningServers,
     Upvotes,
     Activities,
@@ -158,8 +159,6 @@ pub struct DbServer {
     pub state: ServerState,
     pub created: Timestamp,
     pub stopped: Option<Timestamp>,
-    #[serde(default)]
-    pub logs: Vec<ServerLog>,
 }
 
 impl DbCollection for DbServer {
@@ -173,11 +172,17 @@ pub enum ServerState {
     Stopped,
 }
 
+/// A log entry from a server
+/// Subcollection of DbServer
 #[derive(Clone, Debug, PartialEq, Deserialize, Serialize)]
-pub struct ServerLog {
+pub struct DbServerLog {
     pub timestamp: Timestamp,
     pub message: String,
     pub source: Option<ServerLogSource>,
+}
+
+impl DbCollection for DbServerLog {
+    const COLLECTION: DbCollections = DbCollections::ServerLogs;
 }
 
 #[derive(Clone, Copy, Debug, Eq, PartialEq, Deserialize, Serialize)]
