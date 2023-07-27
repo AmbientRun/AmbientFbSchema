@@ -28,8 +28,13 @@ pub enum DbCollections {
 }
 impl DbCollections {
     #[cfg(target_arch = "wasm32")]
-    pub fn doc(&self, id: impl AsRef<str>) -> DocRef {
-        DocRef(format!("{}/{}", self, id.as_ref()))
+    pub fn doc(
+        &self,
+        id: impl AsRef<str>,
+    ) -> Result<firebase_wasm::firestore::DocumentReference, String> {
+        let db = firebase_wasm::firestore::get_firestore();
+        firebase_wasm::firestore::doc(db, &format!("{}/{}", self, id.as_ref()))
+            .map_err(|x| x.as_string().unwrap_or_else(|| "unknown error".into()))
     }
     #[cfg(target_arch = "wasm32")]
     pub fn collection(&self) -> CollectionReference {
@@ -43,25 +48,6 @@ derive_fromstr_from_deserialize!(DbCollections);
 #[test]
 fn test_collections_id() {
     assert_eq!(DbCollections::RunningServers.to_string(), "running_servers");
-}
-
-#[cfg(target_arch = "wasm32")]
-#[derive(Debug, Clone, PartialEq)]
-pub struct DocRef(String);
-
-#[cfg(target_arch = "wasm32")]
-impl DocRef {
-    pub fn from_path(path: impl Into<String>) -> Self {
-        DocRef(path.into())
-    }
-}
-
-#[cfg(target_arch = "wasm32")]
-impl From<DocRef> for firebase_wasm::firestore::DocumentReference {
-    fn from(value: DocRef) -> Self {
-        let db = firebase_wasm::firestore::get_firestore();
-        firebase_wasm::firestore::doc(db, &value.0).unwrap()
-    }
 }
 
 pub trait DbCollection {
