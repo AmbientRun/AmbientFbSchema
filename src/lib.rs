@@ -81,6 +81,10 @@ pub struct DbEmber {
     pub featured: Option<f32>,
     #[serde(default)]
     pub total_upvotes: i32,
+    #[serde(default)]
+    pub latest_screenshot_url: String,
+    #[serde(default)]
+    pub latest_readme_url: String,
 }
 
 impl DbCollection for DbEmber {
@@ -125,6 +129,8 @@ pub struct DbDeployment {
     pub manifest: Manifest,
     pub ambient_version: Version,
     pub created: Timestamp,
+    pub has_screenshot: bool,
+    pub has_readme: bool,
 }
 
 impl DbCollection for DbDeployment {
