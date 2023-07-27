@@ -47,6 +47,8 @@ fn test_collections_id() {
 #[cfg(target_arch = "wasm32")]
 #[derive(Debug, Clone, PartialEq)]
 pub struct DocRef(String);
+
+#[cfg(target_arch = "wasm32")]
 impl DocRef {
     pub fn from_path(path: impl Into<String>) -> Self {
         DocRef(path.into())
