@@ -125,6 +125,9 @@ pub fn hash_api_key(api_key: &str) -> String {
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
 pub struct DbDeployment {
     pub ember_id: String,
+    /// The user that deployed this
+    #[serde(default)]
+    pub user_id: String,
     pub files: Vec<File>,
     pub manifest: Manifest,
     pub ambient_version: Version,
