@@ -119,7 +119,9 @@ pub struct DbDeployment {
     pub manifest: Manifest,
     pub ambient_version: Version,
     pub created: Timestamp,
+    #[serde(default)]
     pub has_screenshot: bool,
+    #[serde(default)]
     pub has_readme: bool,
 }
 
