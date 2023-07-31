@@ -118,6 +118,8 @@ pub struct DbDeployment {
     pub files: Vec<File>,
     pub manifest: Manifest,
     pub ambient_version: Version,
+    #[serde(default)]
+    pub ambient_revision: String,
     pub created: Timestamp,
     #[serde(default)]
     pub has_screenshot: bool,
