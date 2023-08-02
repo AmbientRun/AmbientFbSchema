@@ -14,7 +14,7 @@ parse-display = "0.8"
 serde_plain = "1.0"
 
 [target.'cfg(target_arch = "wasm32")'.dependencies]
-firebase-wasm = { git = "https://github.com/FredrikNoren/firebase-wasm-rs.git" }
-serde-wasm-bindgen = { git = "https://github.com/FredrikNoren/serde-wasm-bindgen.git", rev = "c8bfece" }
+firebase-wasm = { git = "https://github.com/AmbientRun/firebase-wasm-rs.git" }
+serde-wasm-bindgen = { git = "https://github.com/AmbientRun/serde-wasm-bindgen.git" }
 [target.'cfg(not(target_arch = "wasm32"))'.dependencies]
 firestore = "0.32"
