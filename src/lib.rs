@@ -1,6 +1,3 @@
-pub use ::ambient_project;
-use ambient_project::{Manifest, Version};
-
 #[cfg(target_arch = "wasm32")]
 use firebase_wasm::firestore::{CollectionReference, Timestamp as TimestampRaw};
 #[cfg(target_arch = "wasm32")]
@@ -59,7 +56,6 @@ pub struct DbEmber {
     pub owner_id: String,
     pub created: Timestamp,
     pub updated: Timestamp,
-    pub manifest: Manifest,
     #[serde(default)]
     pub latest_deployment: String,
     #[serde(default)]
@@ -75,6 +71,12 @@ pub struct DbEmber {
     /// If true; this can be deleted 24h after it was created
     #[serde(default)]
     pub temporary: bool,
+
+    // Information pulled from the `ambient.toml`:
+    #[serde(default)]
+    pub name: String,
+    #[serde(default)]
+    pub categories: Vec<String>,
 }
 
 impl DbCollection for DbEmber {
@@ -119,8 +121,7 @@ pub struct DbDeployment {
     #[serde(default)]
     pub user_id: String,
     pub files: Vec<File>,
-    pub manifest: Manifest,
-    pub ambient_version: Version,
+    pub ambient_version: String,
     #[serde(default)]
     pub ambient_revision: String,
     pub created: Timestamp,
@@ -131,6 +132,10 @@ pub struct DbDeployment {
     /// If true; this can be deleted 24h after it was created
     #[serde(default)]
     pub temporary: bool,
+
+    // Information pulled from the `ambient.toml`:
+    #[serde(default)]
+    pub version: String,
 }
 
 impl DbCollection for DbDeployment {
