@@ -141,7 +141,7 @@ pub struct DbDeployment {
     #[serde(default)]
     pub ember_type: EmberType,
 }
-#[derive(Debug, Clone, Default, PartialEq, Serialize, Deserialize)]
+#[derive(Debug, Clone, Copy, Default, PartialEq, Serialize, Deserialize)]
 pub enum EmberType {
     #[default]
     Game,
