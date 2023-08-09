@@ -72,6 +72,9 @@ pub struct DbEmber {
     pub latest_screenshot_url: String,
     #[serde(default)]
     pub latest_readme_url: String,
+    /// If true; this can be deleted 24h after it was created
+    #[serde(default)]
+    pub temporary: bool,
 }
 
 impl DbCollection for DbEmber {
@@ -125,6 +128,9 @@ pub struct DbDeployment {
     pub has_screenshot: bool,
     #[serde(default)]
     pub has_readme: bool,
+    /// If true; this can be deleted 24h after it was created
+    #[serde(default)]
+    pub temporary: bool,
 }
 
 impl DbCollection for DbDeployment {
