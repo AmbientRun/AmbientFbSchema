@@ -135,12 +135,15 @@ pub struct DbDeployment {
 
     // Information pulled from the `ambient.toml`:
     #[serde(default)]
+    pub name: String,
+    #[serde(default)]
     pub version: String,
     #[serde(default)]
     pub ember_type: EmberType,
 }
-#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
+#[derive(Debug, Clone, Default, PartialEq, Serialize, Deserialize)]
 pub enum EmberType {
+    #[default]
     Game,
     Mod,
 }
