@@ -171,6 +171,14 @@ impl DbEmberContent {
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
 pub struct DbProfile {
     pub username: String,
+    pub display_name: String,
+    pub bio: String,
+    pub github: String,
+    pub twitter: String,
+    pub instagram: String,
+    pub linkedin: String,
+    pub twitch: String,
+    pub website: String,
     pub created: Timestamp,
 }
 
