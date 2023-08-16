@@ -170,16 +170,25 @@ impl DbEmberContent {
 
 #[derive(Debug, Clone, PartialEq, Default, Serialize, Deserialize)]
 pub struct DbProfile {
-    pub username: String,
-    pub display_name: String,
-    pub bio: String,
-    pub github: String,
-    pub twitter: String,
-    pub instagram: String,
-    pub linkedin: String,
-    pub twitch: String,
-    pub website: String,
     pub created: Timestamp,
+    #[serde(default)]
+    pub username: String,
+    #[serde(default)]
+    pub display_name: String,
+    #[serde(default)]
+    pub bio: String,
+    #[serde(default)]
+    pub github: String,
+    #[serde(default)]
+    pub twitter: String,
+    #[serde(default)]
+    pub instagram: String,
+    #[serde(default)]
+    pub linkedin: String,
+    #[serde(default)]
+    pub twitch: String,
+    #[serde(default)]
+    pub website: String,
 }
 
 impl DbCollection for DbProfile {
