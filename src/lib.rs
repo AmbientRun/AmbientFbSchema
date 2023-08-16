@@ -4,6 +4,7 @@ use firebase_wasm::firestore::{CollectionReference, Timestamp as TimestampRaw};
 use serde_wasm_bindgen::PreserveJsValue;
 #[cfg(target_arch = "wasm32")]
 type Timestamp = PreserveJsValue<TimestampRaw>;
+use ambient_project::EmberContent;
 #[cfg(not(target_arch = "wasm32"))]
 use firestore::FirestoreTimestamp as Timestamp;
 use parse_display::{Display, FromStr};
@@ -76,11 +77,95 @@ pub struct DbEmber {
     #[serde(default)]
     pub name: String,
     #[serde(default)]
-    pub categories: Vec<String>,
+    pub content: DbEmberContent,
 }
 
 impl DbCollection for DbEmber {
     const COLLECTION: DbCollections = DbCollections::Embers;
+}
+
+#[derive(Debug, Clone, PartialEq, Default, Serialize, Deserialize)]
+pub struct DbEmberContent {
+    pub playable: bool,
+    pub example: bool,
+    pub asset: bool,
+    pub models: bool,
+    pub textures: bool,
+    pub fonts: bool,
+    pub code: bool,
+    pub audio: bool,
+    pub tool: bool,
+    pub mod_: bool,
+}
+impl DbEmberContent {
+    pub fn from_content(content: &EmberContent) -> Self {
+        Self {
+            playable: matches!(content, EmberContent::Playable { example: _ }),
+            example: matches!(content, EmberContent::Playable { example: true }),
+            asset: matches!(
+                content,
+                EmberContent::Asset {
+                    models: _,
+                    textures: _,
+                    audio: _,
+                    fonts: _,
+                    code: _
+                }
+            ),
+            models: matches!(
+                content,
+                EmberContent::Asset {
+                    models: true,
+                    textures: _,
+                    audio: _,
+                    fonts: _,
+                    code: _
+                }
+            ),
+            textures: matches!(
+                content,
+                EmberContent::Asset {
+                    models: _,
+                    textures: true,
+                    audio: _,
+                    fonts: _,
+                    code: _
+                }
+            ),
+            audio: matches!(
+                content,
+                EmberContent::Asset {
+                    models: _,
+                    textures: _,
+                    audio: true,
+                    fonts: _,
+                    code: _
+                }
+            ),
+            fonts: matches!(
+                content,
+                EmberContent::Asset {
+                    models: _,
+                    textures: _,
+                    audio: _,
+                    fonts: true,
+                    code: _
+                }
+            ),
+            code: matches!(
+                content,
+                EmberContent::Asset {
+                    models: _,
+                    textures: _,
+                    audio: _,
+                    fonts: _,
+                    code: true
+                }
+            ),
+            tool: matches!(content, EmberContent::Tool),
+            mod_: matches!(content, EmberContent::Mod { for_playables: _ }),
+        }
+    }
 }
 
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
