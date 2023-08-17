@@ -14,7 +14,7 @@ use serde_plain::{derive_display_from_serialize, derive_fromstr_from_deserialize
 #[derive(Debug, Clone, Copy, Serialize, Deserialize)]
 #[serde(rename_all = "snake_case")]
 pub enum DbCollections {
-    Embers,
+    Packages,
     Profiles,
     ApiKeys,
     Deployments,
@@ -53,7 +53,7 @@ pub trait DbCollection {
 }
 
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
-pub struct DbEmber {
+pub struct DbPackage {
     pub owner_id: String,
     pub created: Timestamp,
     pub updated: Timestamp,
@@ -77,15 +77,15 @@ pub struct DbEmber {
     #[serde(default)]
     pub name: String,
     #[serde(default)]
-    pub content: DbEmberContent,
+    pub content: DbPackageContent,
 }
 
-impl DbCollection for DbEmber {
-    const COLLECTION: DbCollections = DbCollections::Embers;
+impl DbCollection for DbPackage {
+    const COLLECTION: DbCollections = DbCollections::Packages;
 }
 
 #[derive(Debug, Clone, PartialEq, Default, Serialize, Deserialize)]
-pub struct DbEmberContent {
+pub struct DbPackageContent {
     pub playable: bool,
     pub example: bool,
     pub asset: bool,
@@ -97,7 +97,7 @@ pub struct DbEmberContent {
     pub tool: bool,
     pub mod_: bool,
 }
-impl DbEmberContent {
+impl DbPackageContent {
     pub fn from_content(content: &EmberContent) -> Self {
         Self {
             playable: matches!(content, EmberContent::Playable { example: _ }),
@@ -218,7 +218,7 @@ pub fn hash_api_key(api_key: &str) -> String {
 
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
 pub struct DbDeployment {
-    pub ember_id: String,
+    pub package_id: String,
     /// The user that deployed this
     #[serde(default)]
     pub user_id: String,
@@ -241,10 +241,10 @@ pub struct DbDeployment {
     #[serde(default)]
     pub version: String,
     #[serde(default)]
-    pub ember_type: EmberType,
+    pub package_type: PackageType,
 }
 #[derive(Debug, Clone, Copy, Default, PartialEq, Serialize, Deserialize)]
-pub enum EmberType {
+pub enum PackageType {
     #[default]
     Game,
     Mod,
@@ -363,8 +363,8 @@ pub struct DbUpvoteId {
 #[derive(Clone, Debug, Eq, PartialEq, Deserialize, Serialize)]
 #[serde(tag = "type")]
 pub enum Activity {
-    EmberDeployed {
-        ember_id: String,
+    PackageDeployed {
+        package_id: String,
         deployment_id: String,
     },
     MessagePosted {
