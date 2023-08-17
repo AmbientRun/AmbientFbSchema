@@ -4,7 +4,7 @@ use firebase_wasm::firestore::{CollectionReference, Timestamp as TimestampRaw};
 use serde_wasm_bindgen::PreserveJsValue;
 #[cfg(target_arch = "wasm32")]
 type Timestamp = PreserveJsValue<TimestampRaw>;
-pub use ambient_project::EmberContent;
+pub use ambient_ember::EmberContent;
 #[cfg(not(target_arch = "wasm32"))]
 use firestore::FirestoreTimestamp as Timestamp;
 use parse_display::{Display, FromStr};
