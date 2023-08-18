@@ -4,7 +4,7 @@ use firebase_wasm::firestore::{CollectionReference, Timestamp as TimestampRaw};
 use serde_wasm_bindgen::PreserveJsValue;
 #[cfg(target_arch = "wasm32")]
 type Timestamp = PreserveJsValue<TimestampRaw>;
-pub use ambient_ember::EmberContent;
+pub use ambient_package::PackageContent;
 #[cfg(not(target_arch = "wasm32"))]
 use firestore::FirestoreTimestamp as Timestamp;
 use parse_display::{Display, FromStr};
@@ -98,13 +98,13 @@ pub struct DbPackageContent {
     pub mod_: bool,
 }
 impl DbPackageContent {
-    pub fn from_content(content: &EmberContent) -> Self {
+    pub fn from_content(content: &PackageContent) -> Self {
         Self {
-            playable: matches!(content, EmberContent::Playable { example: _ }),
-            example: matches!(content, EmberContent::Playable { example: true }),
+            playable: matches!(content, PackageContent::Playable { example: _ }),
+            example: matches!(content, PackageContent::Playable { example: true }),
             asset: matches!(
                 content,
-                EmberContent::Asset {
+                PackageContent::Asset {
                     models: _,
                     textures: _,
                     audio: _,
@@ -114,7 +114,7 @@ impl DbPackageContent {
             ),
             models: matches!(
                 content,
-                EmberContent::Asset {
+                PackageContent::Asset {
                     models: true,
                     textures: _,
                     audio: _,
@@ -124,7 +124,7 @@ impl DbPackageContent {
             ),
             textures: matches!(
                 content,
-                EmberContent::Asset {
+                PackageContent::Asset {
                     models: _,
                     textures: true,
                     audio: _,
@@ -134,7 +134,7 @@ impl DbPackageContent {
             ),
             audio: matches!(
                 content,
-                EmberContent::Asset {
+                PackageContent::Asset {
                     models: _,
                     textures: _,
                     audio: true,
@@ -144,7 +144,7 @@ impl DbPackageContent {
             ),
             fonts: matches!(
                 content,
-                EmberContent::Asset {
+                PackageContent::Asset {
                     models: _,
                     textures: _,
                     audio: _,
@@ -154,7 +154,7 @@ impl DbPackageContent {
             ),
             code: matches!(
                 content,
-                EmberContent::Asset {
+                PackageContent::Asset {
                     models: _,
                     textures: _,
                     audio: _,
@@ -162,8 +162,8 @@ impl DbPackageContent {
                     code: true
                 }
             ),
-            tool: matches!(content, EmberContent::Tool),
-            mod_: matches!(content, EmberContent::Mod { for_playables: _ }),
+            tool: matches!(content, PackageContent::Tool),
+            mod_: matches!(content, PackageContent::Mod { for_playables: _ }),
         }
     }
 }

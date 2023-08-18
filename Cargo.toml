@@ -11,7 +11,7 @@ base16ct = { version = "0.2.0", features = ["alloc"] }
 serde = { version = "1", features = ["derive"] }
 parse-display = "0.8"
 serde_plain = "1.0"
-ambient_ember = { git = "https://github.com/AmbientRun/Ambient.git", rev = "66afc99" }
+ambient_package = { git = "https://github.com/AmbientRun/Ambient.git", rev = "26c1222" }
 
 [target.'cfg(target_arch = "wasm32")'.dependencies]
 firebase-wasm = { git = "https://github.com/AmbientRun/firebase-wasm-rs.git" }
