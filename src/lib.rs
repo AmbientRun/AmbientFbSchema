@@ -29,10 +29,17 @@ impl DbCollections {
     pub fn doc(
         &self,
         id: impl AsRef<str>,
-    ) -> Result<firebase_wasm::firestore::DocumentReference, String> {
+    ) -> anyhow::Result<firebase_wasm::firestore::DocumentReference> {
         let db = firebase_wasm::firestore::get_firestore();
-        firebase_wasm::firestore::doc(db, &format!("{}/{}", self, id.as_ref()))
-            .map_err(|x| x.as_string().unwrap_or_else(|| "unknown error".into()))
+        let doc = firebase_wasm::firestore::doc(db, &format!("{}/{}", self, id.as_ref()));
+        match doc {
+            Ok(doc) => Ok(doc),
+            Err(err) => Err(anyhow::anyhow!(
+                "Failed to create doc ref: {}",
+                err.as_string()
+                    .unwrap_or_else(|| "unknown error".to_string())
+            )),
+        }
     }
     #[cfg(target_arch = "wasm32")]
     pub fn collection(&self) -> CollectionReference {
