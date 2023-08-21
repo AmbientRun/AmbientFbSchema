@@ -382,6 +382,8 @@ pub enum Activity {
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct DbActivity {
     pub timestamp: Timestamp,
+    #[serde(default)]
+    pub user_id: String,
     pub content: Activity,
 }
 impl DbCollection for DbActivity {
