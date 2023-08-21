@@ -1,3 +1,5 @@
+pub mod features;
+
 #[cfg(target_arch = "wasm32")]
 use firebase_wasm::firestore::{CollectionReference, Timestamp as TimestampRaw};
 #[cfg(target_arch = "wasm32")]
@@ -5,6 +7,7 @@ use serde_wasm_bindgen::PreserveJsValue;
 #[cfg(target_arch = "wasm32")]
 type Timestamp = PreserveJsValue<TimestampRaw>;
 pub use ambient_package::PackageContent;
+use features::{FeatNamed, FeatUpvotable};
 #[cfg(not(target_arch = "wasm32"))]
 use firestore::FirestoreTimestamp as Timestamp;
 use parse_display::{Display, FromStr};
@@ -61,6 +64,11 @@ pub trait DbCollection {
 
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
 pub struct DbPackage {
+    #[serde(flatten)]
+    pub named: FeatNamed,
+    #[serde(flatten)]
+    pub upvotable: FeatUpvotable,
+
     pub owner_id: String,
     pub created: Timestamp,
     pub updated: Timestamp,
@@ -71,8 +79,6 @@ pub struct DbPackage {
     /// If this is featured by ambient
     pub featured: Option<f32>,
     #[serde(default)]
-    pub total_upvotes: i32,
-    #[serde(default)]
     pub latest_screenshot_url: String,
     #[serde(default)]
     pub latest_readme_url: String,
@@ -81,8 +87,6 @@ pub struct DbPackage {
     pub temporary: bool,
 
     // Information pulled from the `ambient.toml`:
-    #[serde(default)]
-    pub name: String,
     #[serde(default)]
     pub content: DbPackageContent,
 }
@@ -177,11 +181,12 @@ impl DbPackageContent {
 
 #[derive(Debug, Clone, PartialEq, Default, Serialize, Deserialize)]
 pub struct DbProfile {
+    #[serde(flatten)]
+    pub named: FeatNamed,
+
     pub created: Timestamp,
     #[serde(default)]
     pub username: String,
-    #[serde(default)]
-    pub display_name: String,
     #[serde(default)]
     pub bio: String,
     #[serde(default)]
@@ -342,11 +347,6 @@ pub struct DbMessage {
     pub user_id: String,
     pub created: Timestamp,
     pub content: String,
-}
-
-#[derive(Clone, Debug, Deserialize, Serialize, Default, PartialEq)]
-pub struct DbUpvotable {
-    pub total_upvotes: i32,
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
