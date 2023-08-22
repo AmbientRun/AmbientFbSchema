@@ -90,6 +90,12 @@ impl DbCollection for DbPackage {
     const COLLECTION: DbCollections = DbCollections::Packages;
 }
 
+#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
+pub struct DbDeletable {
+    #[serde(default)]
+    pub deleted: bool,
+}
+
 #[derive(Debug, Clone, PartialEq, Default, Serialize, Deserialize)]
 pub struct DbPackageContent {
     pub playable: bool,
