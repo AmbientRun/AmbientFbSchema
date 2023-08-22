@@ -65,6 +65,8 @@ pub struct DbPackage {
     pub created: Timestamp,
     pub updated: Timestamp,
     #[serde(default)]
+    pub deleted: bool,
+    #[serde(default)]
     pub latest_deployment: String,
     #[serde(default)]
     pub deployments: Vec<String>,
@@ -74,9 +76,6 @@ pub struct DbPackage {
     pub latest_screenshot_url: String,
     #[serde(default)]
     pub latest_readme_url: String,
-    /// If true; this can be deleted 24h after it was created
-    #[serde(default)]
-    pub temporary: bool,
     #[serde(default)]
     pub total_upvotes: i32,
 
