@@ -115,18 +115,31 @@ pub struct DbDeletable {
 
 #[derive(Debug, Clone, PartialEq, Default, Serialize, Deserialize)]
 pub struct DbPackageContent {
+    #[serde(default)]
     pub playable: bool,
+    #[serde(default)]
     pub example: bool,
+    #[serde(default)]
     pub asset: bool,
+    #[serde(default)]
     pub models: bool,
+    #[serde(default)]
     pub animations: bool,
+    #[serde(default)]
     pub textures: bool,
+    #[serde(default)]
     pub materials: bool,
+    #[serde(default)]
     pub fonts: bool,
+    #[serde(default)]
     pub code: bool,
+    #[serde(default)]
     pub schema: bool,
+    #[serde(default)]
     pub audio: bool,
+    #[serde(default)]
     pub tool: bool,
+    #[serde(default)]
     pub mod_: bool,
 }
 impl DbPackageContent {
