@@ -96,15 +96,35 @@ pub struct DbDeletable {
     pub deleted: bool,
 }
 
+// #[serde(default)]
+//         models: bool,
+//         #[serde(default)]
+//         animations: bool,
+//         #[serde(default)]
+//         textures: bool,
+//         #[serde(default)]
+//         materials: bool,
+//         #[serde(default)]
+//         audio: bool,
+//         #[serde(default)]
+//         fonts: bool,
+//         #[serde(default)]
+//         code: bool,
+//         #[serde(default)]
+//         schema: bool,
+
 #[derive(Debug, Clone, PartialEq, Default, Serialize, Deserialize)]
 pub struct DbPackageContent {
     pub playable: bool,
     pub example: bool,
     pub asset: bool,
     pub models: bool,
+    pub animations: bool,
     pub textures: bool,
+    pub materials: bool,
     pub fonts: bool,
     pub code: bool,
+    pub schema: bool,
     pub audio: bool,
     pub tool: bool,
     pub mod_: bool,
@@ -114,66 +134,27 @@ impl DbPackageContent {
         Self {
             playable: matches!(content, PackageContent::Playable { example: _ }),
             example: matches!(content, PackageContent::Playable { example: true }),
-            asset: matches!(
+            asset: matches!(content, PackageContent::Asset { .. }),
+            models: matches!(content, PackageContent::Asset { models: true, .. }),
+            animations: matches!(
                 content,
                 PackageContent::Asset {
-                    models: _,
-                    textures: _,
-                    audio: _,
-                    fonts: _,
-                    code: _
+                    animations: true,
+                    ..
                 }
             ),
-            models: matches!(
+            textures: matches!(content, PackageContent::Asset { textures: true, .. }),
+            materials: matches!(
                 content,
                 PackageContent::Asset {
-                    models: true,
-                    textures: _,
-                    audio: _,
-                    fonts: _,
-                    code: _
+                    materials: true,
+                    ..
                 }
             ),
-            textures: matches!(
-                content,
-                PackageContent::Asset {
-                    models: _,
-                    textures: true,
-                    audio: _,
-                    fonts: _,
-                    code: _
-                }
-            ),
-            audio: matches!(
-                content,
-                PackageContent::Asset {
-                    models: _,
-                    textures: _,
-                    audio: true,
-                    fonts: _,
-                    code: _
-                }
-            ),
-            fonts: matches!(
-                content,
-                PackageContent::Asset {
-                    models: _,
-                    textures: _,
-                    audio: _,
-                    fonts: true,
-                    code: _
-                }
-            ),
-            code: matches!(
-                content,
-                PackageContent::Asset {
-                    models: _,
-                    textures: _,
-                    audio: _,
-                    fonts: _,
-                    code: true
-                }
-            ),
+            audio: matches!(content, PackageContent::Asset { audio: true, .. }),
+            fonts: matches!(content, PackageContent::Asset { fonts: true, .. }),
+            code: matches!(content, PackageContent::Asset { code: true, .. }),
+            schema: matches!(content, PackageContent::Asset { schema: true, .. }),
             tool: matches!(content, PackageContent::Tool),
             mod_: matches!(content, PackageContent::Mod { for_playables: _ }),
         }
@@ -253,13 +234,7 @@ pub struct DbDeployment {
     #[serde(default)]
     pub version: String,
     #[serde(default)]
-    pub package_type: PackageType,
-}
-#[derive(Debug, Clone, Copy, Default, PartialEq, Serialize, Deserialize)]
-pub enum PackageType {
-    #[default]
-    Game,
-    Mod,
+    pub content: PackageContent,
 }
 
 impl DbCollection for DbDeployment {
