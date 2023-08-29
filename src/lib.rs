@@ -84,6 +84,8 @@ pub struct DbPackage {
     pub name: String,
     #[serde(default)]
     pub content: DbPackageContent,
+    #[serde(default)]
+    pub public: bool,
 }
 
 impl DbCollection for DbPackage {
@@ -95,23 +97,6 @@ pub struct DbDeletable {
     #[serde(default)]
     pub deleted: bool,
 }
-
-// #[serde(default)]
-//         models: bool,
-//         #[serde(default)]
-//         animations: bool,
-//         #[serde(default)]
-//         textures: bool,
-//         #[serde(default)]
-//         materials: bool,
-//         #[serde(default)]
-//         audio: bool,
-//         #[serde(default)]
-//         fonts: bool,
-//         #[serde(default)]
-//         code: bool,
-//         #[serde(default)]
-//         schema: bool,
 
 #[derive(Debug, Clone, PartialEq, Default, Serialize, Deserialize)]
 pub struct DbPackageContent {
