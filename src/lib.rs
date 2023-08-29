@@ -83,7 +83,7 @@ pub struct DbPackage {
     #[serde(default)]
     pub name: String,
     #[serde(default)]
-    pub content: DbPackageContent,
+    pub content: Vec<DbPackageContent>,
     #[serde(default)]
     pub public: bool,
 }
@@ -98,63 +98,71 @@ pub struct DbDeletable {
     pub deleted: bool,
 }
 
-#[derive(Debug, Clone, PartialEq, Default, Serialize, Deserialize)]
-pub struct DbPackageContent {
-    #[serde(default)]
-    pub playable: bool,
-    #[serde(default)]
-    pub example: bool,
-    #[serde(default)]
-    pub asset: bool,
-    #[serde(default)]
-    pub models: bool,
-    #[serde(default)]
-    pub animations: bool,
-    #[serde(default)]
-    pub textures: bool,
-    #[serde(default)]
-    pub materials: bool,
-    #[serde(default)]
-    pub fonts: bool,
-    #[serde(default)]
-    pub code: bool,
-    #[serde(default)]
-    pub schema: bool,
-    #[serde(default)]
-    pub audio: bool,
-    #[serde(default)]
-    pub tool: bool,
-    #[serde(default)]
-    pub mod_: bool,
+#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
+pub enum DbPackageContent {
+    Playable,
+    Example,
+    NotExample,
+    Asset,
+    Models,
+    Animations,
+    Textures,
+    Materials,
+    Fonts,
+    Code,
+    Schema,
+    Audio,
+    Other,
+    Tool,
+    Mod_,
 }
 impl DbPackageContent {
-    pub fn from_content(content: &PackageContent) -> Self {
-        Self {
-            playable: matches!(content, PackageContent::Playable { example: _ }),
-            example: matches!(content, PackageContent::Playable { example: true }),
-            asset: matches!(content, PackageContent::Asset { .. }),
-            models: matches!(content, PackageContent::Asset { models: true, .. }),
-            animations: matches!(
-                content,
-                PackageContent::Asset {
-                    animations: true,
-                    ..
+    pub fn from_content(content: &PackageContent) -> Vec<Self> {
+        match content {
+            PackageContent::Playable { example: false } => vec![Self::Playable, Self::NotExample],
+            PackageContent::Playable { example: true } => vec![Self::Playable, Self::Example],
+            PackageContent::Asset {
+                models,
+                animations,
+                textures,
+                materials,
+                audio,
+                fonts,
+                code,
+                schema,
+            } => {
+                let mut res = vec![Self::Asset];
+                if *models {
+                    res.push(Self::Models);
                 }
-            ),
-            textures: matches!(content, PackageContent::Asset { textures: true, .. }),
-            materials: matches!(
-                content,
-                PackageContent::Asset {
-                    materials: true,
-                    ..
+                if *animations {
+                    res.push(Self::Animations);
                 }
-            ),
-            audio: matches!(content, PackageContent::Asset { audio: true, .. }),
-            fonts: matches!(content, PackageContent::Asset { fonts: true, .. }),
-            code: matches!(content, PackageContent::Asset { code: true, .. }),
-            schema: matches!(content, PackageContent::Asset { schema: true, .. }),
-            tool: matches!(content, PackageContent::Tool),
-            mod_: matches!(content, PackageContent::Mod { for_playables: _ }),
+                if *textures {
+                    res.push(Self::Textures);
+                }
+                if *materials {
+                    res.push(Self::Materials);
+                }
+                if *audio {
+                    res.push(Self::Audio);
+                }
+                if *fonts {
+                    res.push(Self::Fonts);
+                }
+                if *code {
+                    res.push(Self::Code);
+                }
+                if *schema {
+                    res.push(Self::Schema);
+                }
+                if res.len() == 1 {
+                    res.push(Self::Other);
+                }
+                res
+            }
+            PackageContent::Tool => vec![Self::Tool],
+            PackageContent::Mod { for_playables: _ } => vec![Self::Mod_],
         }
     }
 }
