@@ -114,7 +114,7 @@ pub enum DbPackageContent {
     Audio,
     Other,
     Tool,
-    Mod_,
+    Mod,
 }
 impl DbPackageContent {
     pub fn from_content(content: &PackageContent) -> Vec<Self> {
@@ -162,7 +162,7 @@ impl DbPackageContent {
                 res
             }
             PackageContent::Tool => vec![Self::Tool],
-            PackageContent::Mod { for_playables: _ } => vec![Self::Mod_],
+            PackageContent::Mod { for_playables: _ } => vec![Self::Mod],
         }
     }
 }
