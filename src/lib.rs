@@ -98,7 +98,7 @@ pub struct DbDeletable {
     pub deleted: bool,
 }
 
-#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
+#[derive(Debug, Clone, Copy, PartialEq, Serialize, Deserialize, Display, FromStr)]
 pub enum DbPackageContent {
     Playable,
     Example,
