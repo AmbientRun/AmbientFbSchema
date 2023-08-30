@@ -82,7 +82,7 @@ pub struct DbPackage {
     // Information pulled from the `ambient.toml`:
     #[serde(default)]
     pub name: String,
-    #[serde(default)]
+    #[serde(default, deserialize_with = "deserialize_package_content")]
     pub content: Vec<DbPackageContent>,
     #[serde(default)]
     pub public: bool,
@@ -165,6 +165,115 @@ impl DbPackageContent {
             PackageContent::Mod { for_playables: _ } => vec![Self::Mod],
         }
     }
+
+    pub fn from_legacy_db_package_content(value: LegacyDbPackageContent) -> Vec<Self> {
+        let mut content = Vec::new();
+        let LegacyDbPackageContent {
+            playable,
+            example,
+            asset,
+            models,
+            animations,
+            textures,
+            materials,
+            fonts,
+            code,
+            schema,
+            audio,
+            tool,
+            mod_,
+        } = value;
+        if playable {
+            content.push(Self::Playable);
+            if example {
+                content.push(Self::Example);
+            } else {
+                content.push(Self::NotExample);
+            }
+        }
+        if asset {
+            content.push(Self::Asset);
+            if models {
+                content.push(Self::Models);
+            }
+            if animations {
+                content.push(Self::Animations);
+            }
+            if textures {
+                content.push(Self::Textures);
+            }
+            if materials {
+                content.push(Self::Materials);
+            }
+            if fonts {
+                content.push(Self::Fonts);
+            }
+            if code {
+                content.push(Self::Code);
+            }
+            if schema {
+                content.push(Self::Schema);
+            }
+            if audio {
+                content.push(Self::Audio);
+            }
+        }
+        if tool {
+            content.push(Self::Tool);
+        }
+        if mod_ {
+            content.push(Self::Mod);
+        }
+        if content.is_empty() {
+            content.push(Self::Other);
+        }
+        content
+    }
+}
+#[derive(Debug, Clone, PartialEq, Default, Serialize, Deserialize)]
+pub struct LegacyDbPackageContent {
+    #[serde(default)]
+    pub playable: bool,
+    #[serde(default)]
+    pub example: bool,
+    #[serde(default)]
+    pub asset: bool,
+    #[serde(default)]
+    pub models: bool,
+    #[serde(default)]
+    pub animations: bool,
+    #[serde(default)]
+    pub textures: bool,
+    #[serde(default)]
+    pub materials: bool,
+    #[serde(default)]
+    pub fonts: bool,
+    #[serde(default)]
+    pub code: bool,
+    #[serde(default)]
+    pub schema: bool,
+    #[serde(default)]
+    pub audio: bool,
+    #[serde(default)]
+    pub tool: bool,
+    #[serde(default)]
+    pub mod_: bool,
+}
+fn deserialize_package_content<'de, D>(deserializer: D) -> Result<Vec<DbPackageContent>, D::Error>
+where
+    D: serde::Deserializer<'de>,
+{
+    #[derive(Clone, Debug, Deserialize)]
+    #[serde(untagged)]
+    pub enum DbPackageContentShim {
+        New(Vec<DbPackageContent>),
+        Legacy(LegacyDbPackageContent),
+    }
+
+    Ok(match DbPackageContentShim::deserialize(deserializer)? {
+        DbPackageContentShim::New(v) => v,
+        DbPackageContentShim::Legacy(v) => DbPackageContent::from_legacy_db_package_content(v),
+    })
 }
 
 #[derive(Debug, Clone, PartialEq, Default, Serialize, Deserialize)]
