@@ -10,9 +10,11 @@ use firestore::FirestoreTimestamp as Timestamp;
 use parse_display::{Display, FromStr};
 use serde::{Deserialize, Serialize};
 use serde_plain::{derive_display_from_serialize, derive_fromstr_from_deserialize};
+use ts_rs::TS;
 
-#[derive(Debug, Clone, Copy, Serialize, Deserialize)]
+#[derive(Debug, Clone, Copy, Serialize, Deserialize, TS)]
 #[serde(rename_all = "snake_case")]
+#[ts(export)]
 pub enum DbCollections {
     Packages,
     Profiles,
@@ -439,9 +441,11 @@ pub struct DbMessage {
     pub content: String,
 }
 
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Deserialize, Serialize, TS)]
+#[ts(export)]
 pub struct DbUpvote {
     pub collection: DbCollections,
+    #[ts(skip)]
     pub created: Timestamp,
     pub user_id: String,
     pub item_id: String,
