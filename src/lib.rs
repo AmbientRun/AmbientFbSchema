@@ -461,7 +461,8 @@ pub struct DbUpvoteId {
     pub object_id: String,
 }
 
-#[derive(Debug, Clone, PartialEq, Serialize, Deserialize, Default)]
+#[derive(Debug, Clone, PartialEq, Serialize, Deserialize, Default, TS)]
+#[ts(export)]
 pub struct DbUpvotable {
     #[serde(default)]
     pub total_upvotes: i32,
