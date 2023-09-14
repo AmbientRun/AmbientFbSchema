@@ -87,6 +87,8 @@ pub struct DbPackage {
     #[serde(default, deserialize_with = "deserialize_package_content")]
     pub content: Vec<DbPackageContent>,
     #[serde(default)]
+    pub for_playables: Vec<String>,
+    #[serde(default)]
     pub public: bool,
 }
 
