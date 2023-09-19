@@ -10,6 +10,7 @@ use firestore::FirestoreTimestamp as Timestamp;
 use parse_display::{Display, FromStr};
 use serde::{Deserialize, Serialize};
 use serde_plain::{derive_display_from_serialize, derive_fromstr_from_deserialize};
+use sha2::digest::OutputSizeUser;
 use ts_rs::TS;
 
 #[derive(Debug, Clone, Copy, Serialize, Deserialize, TS)]
@@ -23,6 +24,7 @@ pub enum DbCollections {
     Servers,
     ServerLogs,
     RunningServers,
+    ShardedServers,
     Upvotes,
     Activities,
 }
@@ -369,15 +371,25 @@ pub struct File {
     pub md5: MD5Digest,
 }
 
+#[derive(Clone, Copy, Debug, Serialize, Deserialize)]
+pub enum Region {
+    EU,
+    US,
+}
+
+derive_display_from_serialize!(Region);
+derive_fromstr_from_deserialize!(Region);
+
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct DbServer {
-    pub name: String,
     pub context: String,
     pub deploy_url: String,
     pub host: String,
     pub state: ServerState,
     pub created: Timestamp,
-    pub stopped: Option<Timestamp>,
+    pub updated: Timestamp,
+    pub player_count: Option<u32>,
+    pub region: Region,
 }
 
 impl DbCollection for DbServer {
@@ -412,28 +424,61 @@ pub enum ServerLogSource {
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct DbRunningServer {
+    #[serde(default)]
     pub server_id: String,
     pub deploy_url: String,
     pub context: String,
+    pub region: Region,
 }
 
 impl DbRunningServer {
-    // NOTE: generated document_id can have a collission with specifically crated values
-    pub fn document_id(deploy_url: &str, context: &str) -> String {
+    // NOTE: generated document_id can have a collission with specifically created values
+    pub fn document_id(region: Region, deploy_url: &str, context: &str) -> String {
         use sha2::{Digest, Sha256};
 
-        let mut hasher = Sha256::new();
-        hasher.update("url:");
-        hasher.update(deploy_url);
-        hasher.update("context:");
-        hasher.update(context);
-        let hash = hasher.finalize();
-        base16ct::lower::encode_string(&hash)
+        let hash_char_len = <Sha256 as OutputSizeUser>::output_size() * 2; // 2 because each byte becomes 2 chars in hex
+        match (
+            deploy_url.strip_prefix("https://assets.ambient.run/"),
+            context,
+        ) {
+            (Some(id), "") if has_only_safe_chars(id) => format!("{}-{}", region, id),
+            (Some(id), ctx)
+                if has_only_safe_chars(id)
+                    && ctx.len() < hash_char_len
+                    && has_only_safe_chars(ctx) =>
+            {
+                format!("{}-{}-{}", region, id, ctx)
+            }
+            _ => {
+                let mut hasher = Sha256::new();
+                hasher.update("url:");
+                hasher.update(deploy_url);
+                hasher.update("context:");
+                hasher.update(context);
+                let hash = hasher.finalize();
+                let hash = base16ct::lower::encode_string(&hash);
+                format!("{}-{}", region, hash)
+            }
+        }
     }
+}
+
+fn has_only_safe_chars(s: &str) -> bool {
+    s.chars().all(|c| c.is_ascii_alphanumeric())
 }
 
 impl DbCollection for DbRunningServer {
     const COLLECTION: DbCollections = DbCollections::RunningServers;
+}
+
+/// Subcollection of DbRunningServer
+#[derive(Clone, Debug, Deserialize, Serialize)]
+pub struct DbShardedServer {
+    pub server_id: String,
+}
+
+impl DbCollection for DbShardedServer {
+    const COLLECTION: DbCollections = DbCollections::ShardedServers;
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
