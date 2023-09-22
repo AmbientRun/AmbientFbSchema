@@ -481,9 +481,11 @@ impl DbCollection for DbShardedServer {
     const COLLECTION: DbCollections = DbCollections::ShardedServers;
 }
 
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Deserialize, Serialize, TS)]
+#[ts(export)]
 pub struct DbMessage {
     pub user_id: String,
+    #[ts(skip)]
     pub created: Timestamp,
     pub content: String,
 }
