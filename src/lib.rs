@@ -485,7 +485,7 @@ impl DbCollection for DbShardedServer {
 #[ts(export)]
 pub struct DbMessage {
     pub user_id: String,
-    #[ts(skip)]
+    #[ts(type = "Timestamp")]
     pub created: Timestamp,
     pub content: String,
 }
@@ -494,7 +494,7 @@ pub struct DbMessage {
 #[ts(export)]
 pub struct DbUpvote {
     pub collection: DbCollections,
-    #[ts(skip)]
+    #[ts(type = "Timestamp")]
     pub created: Timestamp,
     pub user_id: String,
     pub item_id: String,
@@ -517,8 +517,9 @@ pub struct DbUpvotable {
     pub total_upvotes: i32,
 }
 
-#[derive(Clone, Debug, Eq, PartialEq, Deserialize, Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, Deserialize, Serialize, TS)]
 #[serde(tag = "type")]
+#[ts(export)]
 pub enum Activity {
     PackageDeployed {
         package_id: String,
@@ -529,8 +530,10 @@ pub enum Activity {
     },
 }
 
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Deserialize, Serialize, TS)]
+#[ts(export)]
 pub struct DbActivity {
+    #[ts(type = "Timestamp")]
     pub timestamp: Timestamp,
     #[serde(default)]
     pub user_id: String,
