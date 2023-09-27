@@ -429,6 +429,12 @@ pub struct DbRunningServer {
     pub deploy_url: String,
     pub context: String,
     pub region: Region,
+    #[serde(default)]
+    pub package_id: String,
+    #[serde(default)]
+    pub deployment_id: String,
+    #[serde(default)]
+    pub owner_id: String,
 }
 
 impl DbRunningServer {
