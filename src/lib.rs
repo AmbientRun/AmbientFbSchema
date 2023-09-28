@@ -337,7 +337,7 @@ pub struct DbDeployment {
     #[serde(default)]
     pub user_id: String,
     pub files: Vec<File>,
-    pub ambient_version: String,
+    pub ambient_version: semver::Version,
     #[serde(default)]
     pub ambient_revision: String,
     pub created: Timestamp,
@@ -352,10 +352,13 @@ pub struct DbDeployment {
     // Information pulled from the `ambient.toml`:
     #[serde(default)]
     pub name: String,
-    #[serde(default)]
-    pub version: String,
+    #[serde(default = "zero_version")]
+    pub version: semver::Version,
     #[serde(default)]
     pub content: PackageContent,
+}
+fn zero_version() -> semver::Version {
+    semver::Version::new(0, 0, 0)
 }
 
 impl DbCollection for DbDeployment {
