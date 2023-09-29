@@ -374,7 +374,7 @@ pub struct File {
     pub md5: MD5Digest,
 }
 
-#[derive(Clone, Copy, Debug, Serialize, Deserialize)]
+#[derive(Clone, Copy, Debug, PartialEq, Eq, Hash, PartialOrd, Ord, Serialize, Deserialize)]
 pub enum Region {
     EU,
     US,
