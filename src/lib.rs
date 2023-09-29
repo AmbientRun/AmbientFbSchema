@@ -393,6 +393,12 @@ pub struct DbServer {
     pub updated: Timestamp,
     pub player_count: Option<u32>,
     pub region: Region,
+    #[serde(default)]
+    pub package_id: String,
+    #[serde(default)]
+    pub deployment_id: String,
+    #[serde(default)]
+    pub owner_id: String,
 }
 
 impl DbCollection for DbServer {
