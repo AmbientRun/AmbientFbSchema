@@ -448,21 +448,36 @@ pub struct DbRunningServer {
 
 impl DbRunningServer {
     // NOTE: generated document_id can have a collission with specifically created values
-    pub fn document_id(region: Region, deploy_url: &str, context: &str) -> String {
+    pub fn document_id(
+        region: Region,
+        fleet: Option<&str>,
+        deploy_url: &str,
+        context: &str,
+    ) -> String {
         use sha2::{Digest, Sha256};
 
+        if let Some(fleet) = fleet {
+            assert!(has_only_safe_chars(fleet));
+        }
+
         let hash_char_len = <Sha256 as OutputSizeUser>::output_size() * 2; // 2 because each byte becomes 2 chars in hex
+
+        // fleet_str is "-FLEET" or ""
+        let fleet_str = fleet
+            .and_then(|f| (!f.is_empty()).then(|| format!("-{}", f)))
+            .unwrap_or_default();
+        let region_with_fleet = format!("{}{}", region, fleet_str);
         match (
             deploy_url.strip_prefix("https://assets.ambient.run/"),
             context,
         ) {
-            (Some(id), "") if has_only_safe_chars(id) => format!("{}-{}", region, id),
+            (Some(id), "") if has_only_safe_chars(id) => format!("{}-{}", region_with_fleet, id),
             (Some(id), ctx)
                 if has_only_safe_chars(id)
                     && ctx.len() < hash_char_len
                     && has_only_safe_chars(ctx) =>
             {
-                format!("{}-{}-{}", region, id, ctx)
+                format!("{}-{}-{}", region_with_fleet, id, ctx)
             }
             _ => {
                 let mut hasher = Sha256::new();
@@ -472,7 +487,7 @@ impl DbRunningServer {
                 hasher.update(context);
                 let hash = hasher.finalize();
                 let hash = base16ct::lower::encode_string(&hash);
-                format!("{}-{}", region, hash)
+                format!("{}-{}", region_with_fleet, hash)
             }
         }
     }
@@ -480,6 +495,55 @@ impl DbRunningServer {
 
 fn has_only_safe_chars(s: &str) -> bool {
     s.chars().all(|c| c.is_ascii_alphanumeric())
+}
+
+#[test]
+fn test_running_server_document_id() {
+    assert_eq!(
+        &DbRunningServer::document_id(
+            Region::EU,
+            None,
+            "https://assets.ambient.run/somedeployment",
+            ""
+        ),
+        "EU-somedeployment"
+    );
+    assert_eq!(
+        &DbRunningServer::document_id(
+            Region::EU,
+            None,
+            "https://assets.ambient.run/somedeployment",
+            "context"
+        ),
+        "EU-somedeployment-context"
+    );
+    assert_eq!(
+        &DbRunningServer::document_id(
+            Region::EU,
+            None,
+            "https://assets.ambient.run/somedeployment",
+            std::str::from_utf8(&[b'A'; 128]).unwrap()
+        ),
+        "EU-0d0b59652cc8bb5ed48964f804f3f00c731e9f90f4f814bd3add922c214cfa62"
+    );
+    assert_eq!(
+        &DbRunningServer::document_id(
+            Region::EU,
+            Some("canary"),
+            "https://assets.ambient.run/somedeployment",
+            ""
+        ),
+        "EU-canary-somedeployment"
+    );
+    assert_eq!(
+        &DbRunningServer::document_id(
+            Region::EU,
+            Some("canary"),
+            "https://assets.ambient.run/somedeployment",
+            "context"
+        ),
+        "EU-canary-somedeployment-context"
+    );
 }
 
 impl DbCollection for DbRunningServer {
