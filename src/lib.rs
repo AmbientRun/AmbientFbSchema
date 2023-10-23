@@ -63,10 +63,13 @@ pub trait DbCollection {
     const COLLECTION: DbCollections;
 }
 
-#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
+#[derive(Debug, Clone, PartialEq, Serialize, Deserialize, TS)]
+#[ts(export)]
 pub struct DbPackage {
     pub owner_id: String,
+    #[ts(type = "Timestamp")]
     pub created: Timestamp,
+    #[ts(type = "Timestamp")]
     pub updated: Timestamp,
     #[serde(default)]
     pub deleted: bool,
@@ -104,7 +107,8 @@ pub struct DbDeletable {
     pub deleted: bool,
 }
 
-#[derive(Debug, Clone, Copy, PartialEq, Serialize, Deserialize, Display, FromStr)]
+#[derive(Debug, Clone, Copy, PartialEq, Serialize, Deserialize, Display, FromStr, TS)]
+#[ts(export)]
 pub enum DbPackageContent {
     Playable,
     Example,
