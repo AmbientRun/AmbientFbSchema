@@ -89,6 +89,8 @@ pub struct DbPackage {
     // Information pulled from the `ambient.toml`:
     #[serde(default)]
     pub name: String,
+    #[serde(default)]
+    pub description: String,
     #[serde(default, deserialize_with = "deserialize_package_content")]
     pub content: Vec<DbPackageContent>,
     #[serde(default)]
