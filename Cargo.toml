@@ -6,7 +6,7 @@ edition = "2021"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-sha2 = "0.10.6"
+sha2 = "0.10.8"
 base16ct = { version = "0.2.0", features = ["alloc"] }
 serde = { version = "1", features = ["derive"] }
 parse-display = "0.8"
@@ -20,4 +20,4 @@ semver = { version = "1", features = ["serde"] }
 firebase-wasm = { git = "https://github.com/AmbientRun/firebase-wasm-rs.git" }
 serde-wasm-bindgen = { git = "https://github.com/AmbientRun/serde-wasm-bindgen.git" }
 [target.'cfg(not(target_arch = "wasm32"))'.dependencies]
-firestore = "0.32"
+firestore = "0.37"
