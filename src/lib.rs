@@ -18,6 +18,7 @@ use ts_rs::TS;
 #[ts(export)]
 pub enum DbCollections {
     Packages,
+    PackageVersions,
     Profiles,
     ApiKeys,
     Deployments,
@@ -74,6 +75,8 @@ pub struct DbPackage {
     #[serde(default)]
     pub deleted: bool,
     #[serde(default)]
+    pub latest_version: Option<DbPackageVersionWithVersion>,
+    #[serde(default)]
     pub latest_deployment: String,
     #[serde(default)]
     pub deployments: Vec<String>,
@@ -101,6 +104,38 @@ pub struct DbPackage {
 
 impl DbCollection for DbPackage {
     const COLLECTION: DbCollections = DbCollections::Packages;
+}
+
+impl DbPackage {
+    /// Helper method for getting the parent path for a given package_id,
+    /// so that it can be used with DbPackageVersion / `parent`
+    pub fn parent_path_for(
+        db: &firestore::FirestoreDb,
+        package_id: &str,
+    ) -> firestore::FirestoreResult<String> {
+        Ok(db
+            .parent_path(&Self::COLLECTION.to_string(), package_id)?
+            .to_string())
+    }
+}
+
+/// Subcollection of DbPackage
+#[derive(Clone, Debug, Deserialize, Serialize, TS)]
+#[ts(export)]
+pub struct DbPackageVersion {
+    pub deployment_id: String,
+}
+
+impl DbCollection for DbPackageVersion {
+    const COLLECTION: DbCollections = DbCollections::PackageVersions;
+}
+
+/// Helper struct used with `DbPackage` to store the latest version
+#[derive(Debug, Clone, PartialEq, Serialize, Deserialize, TS)]
+#[ts(export)]
+pub struct DbPackageVersionWithVersion {
+    pub version: String,
+    pub deployment_id: String,
 }
 
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
@@ -609,6 +644,7 @@ pub enum Activity {
     PackageDeployed {
         package_id: String,
         deployment_id: String,
+        version: Option<String>,
     },
     MessagePosted {
         path: String,
