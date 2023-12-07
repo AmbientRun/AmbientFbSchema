@@ -109,6 +109,7 @@ impl DbCollection for DbPackage {
 impl DbPackage {
     /// Helper method for getting the parent path for a given package_id,
     /// so that it can be used with DbPackageVersion / `parent`
+    #[cfg(not(target_arch = "wasm32"))]
     pub fn parent_path_for(
         db: &firestore::FirestoreDb,
         package_id: &str,
